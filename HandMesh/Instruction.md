@@ -72,16 +72,61 @@ https://drive.google.com/drive/folders/1MIE0Jo01blG6RWo2trQbXlQ92tMOaLx_
 place `HandMesh/cmr/out/Human36M/cmr_g/checkpoints/cmr_pg_res18_human36m.pt`
 
 
-## Demo
+# Demo
 ```
 ./cmr/scripts/demo_mobrecon.sh
 ```
+## Original Version
 inputs at
 ```
-HandMesh/cmr/images
+HandMesh/cmr/images/...
 ```
 outputs at
 ```
-HandMesh/cmr/out/FreiHAND/mobrecon/demo/
+HandMesh/cmr/out/FreiHAND/mobrecon/demo/...
 ```
+
+## Edited Version
+replace `HandMesh/cmr/runer.py`
+with `Research_support/HandMesh/run.py`
+
+inputs at
+```
+HandMesh/cmr/images/{some folders}/...
+```
+outputs at
+```
+HandMesh/cmr/out/FreiHAND/mobrecon/demo/{some folders}/...
+```
+
+# Train
+## Dataset - FreiHAND
+Download FreiHAND dataset from official website: https://lmb.informatik.uni-freiburg.de/projects/freihand/  
+`FreiHAND_pub_v2.zip`
+
+follow the instructions in HandMesh README to accomplish the dataset  
+and download `freihand_train_mesh.zip` from https://drive.google.com/drive/folders/1MIE0Jo01blG6RWo2trQbXlQ92tMOaLx_
+
+also prepare its evaluation set
+
+create soft link to `HandMesh/cmr/data/FreiHAND
+```
+HandMesh/cmr/data $
+    ln -s /path/to/FreiHAND_pub_v2 FreiHAND
+```
+
+## Dataset - GE
+```
+~/Desktop $
+    git clone https://github.com/3d-hand-shape/hand-graph-cnn/
+
+HandMesh/data $
+    ln -s ../../hand-graph-cnn/data/real_world_testset Ge
+```
+
+## Pretrained Weight
+Download `densestack.pth` from https://drive.google.com/drive/folders/1MIE0Jo01blG6RWo2trQbXlQ92tMOaLx_  
+and placed at `HandMesh/mobrecon/out/densestack.pth`
+
+
 
