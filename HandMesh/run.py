@@ -77,7 +77,7 @@ class Runner(object):
 
                 vertex2xyz = mano_to_mpii(np.matmul(self.j_regressor, vertex))
                 # np.savetxt(os.path.join(args.out_dir, 'demotext', image_name + '_xyz.txt'), vertex2xyz)
-                np.savetxt(os.path.join(output_fp, image_name + '_xyz.txt'), vertex2xyz)
+                np.savetxt(os.path.join(output_fp, image_name + '_xyz.txt'), vertex2xyz, fmt='%f')
 
                 save_a_image_with_mesh_joints(image[..., ::-1], mask_pred, poly, K, vertex, self.faces[0], uv_point_pred[0], vertex2xyz,
                                               os.path.join(output_fp, image_name + '_plot.jpg'))
