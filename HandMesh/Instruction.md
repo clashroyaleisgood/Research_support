@@ -100,6 +100,9 @@ HandMesh/cmr/out/FreiHAND/mobrecon/demo/{some folders}/...
 ```
 
 # Train
+```
+./mobrecon/scripts/train_mobrecon.sh
+```
 ## Dataset - FreiHAND
 Download FreiHAND dataset from official website: https://lmb.informatik.uni-freiburg.de/projects/freihand/  
 `FreiHAND_pub_v2.zip`
@@ -128,5 +131,59 @@ HandMesh/data $
 Download `densestack.pth` from https://drive.google.com/drive/folders/1MIE0Jo01blG6RWo2trQbXlQ92tMOaLx_  
 and placed at `HandMesh/mobrecon/out/densestack.pth`
 
+## code detail
+`mobrecon/main.py`:
+- build_model()
+  `build.py` - `mobrecon/models/mobrecon_ds.py`
+- build_dataset()
+  `build.py` - `mobrecon/datasets/multipledatasets.py` - `mobrecon/datasets/[freihand.py, comphand.py]`
+- train_loader = DataLoader(dataset)
+- runner.run(), run the training, testing...
+  `runner.py`
+
+
+`mobrecon/build.py`:
+```
+def build_model(cfg):
+    #                    .get('MobRecon_DS')
+    return MODEL_REGISTRY.get(cfg['MODEL']['NAME'])(cfg)
+
+def build_dataset(cfg):
+    #                   .get('MultipleDatasets')
+    return DATA_REGISTRY.get(cfg[phase.upper()]['DATASET'])(cfg, phase, **kwargs)
+```
+
+`mobrecon/models/mobrecon_ds.py`:
+```
+from mobrecon.build import MODEL_REGISTRY
+@MODEL_REGISTRY.register()
+class MobRecon_DS(nn.Module):
+    pass
+
+decorater 將 MobRecon_DS class 紀錄到 build.py - MODEL_REGISTRY 裡面
+MODEL_REGISTRY.get('MobRecon_DS') -> 得到那個 class
+```
+
+`mobrecon/datasets/multipledatasets.py`
+```
+from mobrecon.build import DATA_REGISTRY
+@DATA_REGISTRY.register()
+class MultipleDatasets(Dataset):
+    pass
+
+decorater 將 MultipleDatasets class 紀錄到 build.py - DATA_REGISTRY 裡面
+DATA_REGISTRY.get('MultipleDatasets') -> 得到那個 class
+
+MultipleDatasets(Dataset)
+將兩個 datasets 合併，FreiHAND(), CompHand()
+```
+
+`mobrecon/runner.py`:
+- Runner() class
+```
+self.run(phase='train')
+-> for epoch in range(MAX_EPOCH): self.train()
+-> for data in self.train_loader: out = self.model(data['img'])
+```
 
 
