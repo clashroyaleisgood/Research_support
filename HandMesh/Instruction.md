@@ -133,16 +133,16 @@ HandMesh/data $
 Download Complement dataset following https://github.com/SeanChenxy/HandMesh/blob/main/complement_data.md
 ```
 create folders like
-CompHAND/           -- different to official README
+CompHand/           -- different to official README
     base_pose/
     trans_pose_batch1/
     trans_pose_batch2/
     trans_pose_batch3/
 ```
-create soft link to `HandMesh/data/CompHAND
+create soft link to `HandMesh/data/CompHand
 ```
 HandMesh/data $
-    ln -s ~/Desktop/CompHAND CompHAND
+    ln -s ~/Desktop/CompHand CompHand
 ```
 
 ## Pretrained Weight
