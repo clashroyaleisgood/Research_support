@@ -133,21 +133,26 @@ HandMesh/data $
 Download Complement dataset following https://github.com/SeanChenxy/HandMesh/blob/main/complement_data.md
 ```
 create folders like
-Compdata/
+CompHAND/           -- different to official README
     base_pose/
     trans_pose_batch1/
     trans_pose_batch2/
     trans_pose_batch3/
 ```
-create soft link to `HandMesh/data/Compdata
+create soft link to `HandMesh/data/CompHAND
 ```
 HandMesh/data $
-    ln -s ~/Desktop/Compdata Compdata
+    ln -s ~/Desktop/CompHAND CompHAND
 ```
 
 ## Pretrained Weight
 Download `densestack.pth` from https://drive.google.com/drive/folders/1MIE0Jo01blG6RWo2trQbXlQ92tMOaLx_  
 and placed at `HandMesh/mobrecon/out/densestack.pth`
+
+## code edition
+- show message on cmd interface
+  utils/writer.py -> Writer.print_step_ft(self, info) -> add `print('  > ' + message)`
+- 
 
 ## code detail
 `mobrecon/main.py`:
