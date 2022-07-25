@@ -112,9 +112,9 @@ and download `freihand_train_mesh.zip` from https://drive.google.com/drive/folde
 
 also prepare its evaluation set
 
-create soft link to `HandMesh/cmr/data/FreiHAND
+create soft link to `HandMesh/data/FreiHAND
 ```
-HandMesh/cmr/data $
+HandMesh/data $
     ln -s /path/to/FreiHAND_pub_v2 FreiHAND
 ```
 
@@ -122,9 +122,27 @@ HandMesh/cmr/data $
 ```
 ~/Desktop $
     git clone https://github.com/3d-hand-shape/hand-graph-cnn/
-
+```
+create soft link to `HandMesh/data/Ge
+```
 HandMesh/data $
     ln -s ../../hand-graph-cnn/data/real_world_testset Ge
+```
+
+## Dataset - Compdata
+Download Complement dataset following https://github.com/SeanChenxy/HandMesh/blob/main/complement_data.md
+```
+create folders like
+Compdata/
+    base_pose/
+    trans_pose_batch1/
+    trans_pose_batch2/
+    trans_pose_batch3/
+```
+create soft link to `HandMesh/data/Compdata
+```
+HandMesh/data $
+    ln -s ~/Desktop/Compdata Compdata
 ```
 
 ## Pretrained Weight
