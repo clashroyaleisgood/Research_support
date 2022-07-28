@@ -69,7 +69,10 @@ Desktop/HandMesh $
 ## Download other model weight or other files
 https://drive.google.com/drive/folders/1MIE0Jo01blG6RWo2trQbXlQ92tMOaLx_
 
-place `HandMesh/cmr/out/Human36M/cmr_g/checkpoints/cmr_pg_res18_human36m.pt`
+- place `cmr/out/FreiHAND/mobrecon/checkpoints/mobrecon_densestack_dsconv.pt`
+  for demo mobrecon
+- place `HandMesh/cmr/out/Human36M/cmr_g/checkpoints/cmr_pg_res18_human36m.pt`
+  for demo cmr...
 
 
 # Demo
