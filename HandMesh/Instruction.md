@@ -155,7 +155,7 @@ and placed at `HandMesh/mobrecon/out/densestack.pth`
 ## code edition
 - show message on cmd interface
   utils/writer.py -> Writer.print_step_ft(self, info) -> add `print('  > ' + message)`
-- 
+- ... as my forked version
 
 ## code detail
 `mobrecon/main.py`:
@@ -212,4 +212,38 @@ self.run(phase='train')
 -> for data in self.train_loader: out = self.model(data['img'])
 ```
 
+# New Code
+# Train... same
+# Evaluation - Ge
+Evaluate on Ge dataset
 
+**Steps**
+```
+exp_name='mrc_ds'
+CUDA_VISIBLE_DEVICES=0
+
+python -m mobrecon.main \
+    --exp_name $exp_name \
+    --config_file mobrecon/configs/mobrecon_ds_eval.yml
+```
+
+**evaluate** result show on terminal
+
+# Test - FreiHAND
+Test on FreiHAND test set
+
+**Steps**
+```
+exp_name='mrc_ds'
+CUDA_VISIBLE_DEVICES=0
+
+python -m mobrecon.main \
+    --exp_name $exp_name \
+    --config_file mobrecon/configs/mobrecon_ds_pred.yml
+```
+
+**predict** result at:
+- json: `HandMesh/mobrecon/out/MultipleDatasets/mrc_ds/mrc_ds.json`
+- image: `HandMesh/mobrecon/out/MultipleDatasets/mrc_ds/test/`
+
+# Inference
