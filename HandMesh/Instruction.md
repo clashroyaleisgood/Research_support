@@ -213,8 +213,8 @@ self.run(phase='train')
 ```
 
 # New Code
-# Train... same
-# Evaluation - Ge
+## Train... same
+## Evaluation - Ge
 Evaluate on Ge dataset
 
 **Steps**
@@ -229,7 +229,7 @@ python -m mobrecon.main \
 
 **evaluate** result show on terminal
 
-# Test - FreiHAND
+## Test - FreiHAND
 Test on FreiHAND test set
 
 **Steps**
@@ -246,4 +246,18 @@ python -m mobrecon.main \
 - json: `HandMesh/mobrecon/out/MultipleDatasets/mrc_ds/mrc_ds.json`
 - image: `HandMesh/mobrecon/out/MultipleDatasets/mrc_ds/test/`
 
-# Inference
+## Inference
+inference the images in `HandMesh/mobrecon/images/{ fold }/*.jpg`
+
+**Steps**
+```
+exp_name='mrc_ds'
+CUDA_VISIBLE_DEVICES=0
+
+python -m mobrecon.main \
+    --exp_name $exp_name \
+    --config_file mobrecon/configs/mobrecon_ds_demo.yml
+```
+
+**results** are stored in `HandMesh/mobrecon/out/MultipleDatasets/mrc_ds/demo/{ fold }/`  
+or shortcut(soft link) in `HandMesh/mobrecon/images/demo/{ fold }/`
