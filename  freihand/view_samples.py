@@ -1,4 +1,4 @@
-from __future__ import print_function, unicode_literals
+# from __future__ import print_function, unicode_literals
 import matplotlib.pyplot as plt
 import argparse
 
@@ -13,7 +13,7 @@ def show_training_samples(base_path, version, num2show=None, render_mano=False):
         num2show = db_size('training') # show all
 
     # load annotations
-    db_data_anno = load_db_annotation(base_path, 'training')
+    db_data_anno = list(load_db_annotation(base_path, 'training'))
 
     # iterate over all samples
     for idx in range(db_size('training')):

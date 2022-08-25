@@ -2,10 +2,16 @@ from __future__ import print_function, unicode_literals
 import matplotlib
 matplotlib.use('Agg')
 import matplotlib.pyplot as plt
+import numpy as np
+import os
 
 import pip
 import argparse
 import json
+
+import base64
+import sys
+sys.path.append('..')
 
 def install(package):
     if hasattr(pip, 'main'):
@@ -36,8 +42,8 @@ except:
 
 
 def verts2pcd(verts, color=None):
-    pcd = o3d.PointCloud()
-    pcd.points = o3d.Vector3dVector(verts)
+    pcd = o3d.geometry.PointCloud()
+    pcd.points = o3d.utility.Vector3dVector(verts)
     if color is not None:
         if color == 'r':
             pcd.paint_uniform_color([1, 0.0, 0])
@@ -51,8 +57,11 @@ def verts2pcd(verts, color=None):
 def calculate_fscore(gt, pr, th=0.01):
     gt = verts2pcd(gt)
     pr = verts2pcd(pr)
-    d1 = o3d.compute_point_cloud_to_point_cloud_distance(gt, pr) # closest dist for each gt point
-    d2 = o3d.compute_point_cloud_to_point_cloud_distance(pr, gt) # closest dist for each pred point
+    # d1 = o3d.compute_point_cloud_to_point_cloud_distance(gt, pr) # closest dist for each gt point
+    d1 = gt.compute_point_cloud_distance(pr)
+    # d2 = o3d.compute_point_cloud_to_point_cloud_distance(pr, gt) # closest dist for each pred point
+    d2 = pr.compute_point_cloud_distance(gt)
+
     if len(d1) and len(d2):
         recall = float(sum(d < th for d in d2)) / float(len(d2))  # how many of our predicted points lie close to a gt point?
         precision = float(sum(d < th for d in d1)) / float(len(d1))  # how many of gt points are matched?
@@ -122,7 +131,11 @@ def createHTML(outputDir, curve_list):
         plt.savefig(img_path, bbox_inches=0, dpi=300)
 
         # write image and create html embedding
-        data_uri1 = open(img_path, 'rb').read().encode('base64').replace('\n', '')
+        # data_uri1 = open(img_path, 'rb').read().encode('base64').replace('\n', '')
+        # ! Error here 'bytes' object has no attribute 'encode'
+        data_uri1 = base64.b64encode(open(img_path, 'rb').read())
+        # solved by base64.b64encode(byte)
+        data_uri1 = data_uri1.decode("utf-8")  # byte string to string, b'123' to '123
         img_tag1 = 'src="data:image/png;base64,{0}"'.format(data_uri1)
         curve_data_list.append((item.text, img_tag1))
 
@@ -306,6 +319,7 @@ def main(gt_path, pred_path, output_dir, pred_file_name=None, set_name=None):
         f_out.append('f_al_score_%d: %f' % (round(t*1000), fa.mean()))
 
     # Dump results
+    os.makedirs(output_dir, exist_ok=True)
     score_path = os.path.join(output_dir, 'scores.txt')
     with open(score_path, 'w') as fo:
         xyz_mean3d *= 100
@@ -347,27 +361,35 @@ def main(gt_path, pred_path, output_dir, pred_file_name=None, set_name=None):
         'mesh': [thresh_mesh.tolist(), pck_mesh.tolist()],
         'mesh_al': [thresh_mesh_al.tolist(), pck_mesh_al.tolist()],
     }
-    with open('pck_data.json', 'w') as fo:
+    with open(os.path.join(output_dir, 'pck_data.json'), 'w') as fo:
         json.dump(pck_curve_data, fo)
 
     print('Evaluation complete.')
 
 
 if __name__ == '__main__':
-    parser = argparse.ArgumentParser(description='Show some samples from the dataset.')
-    parser.add_argument('input_dir', type=str,
-                        help='Path to where prediction the submited result and the ground truth is.')
-    parser.add_argument('output_dir', type=str,
-                        help='Path to where the eval result should be.')
-    parser.add_argument('--pred_file_name', type=str, default='pred.json',
-                        help='Name of the eval file.')
-    args = parser.parse_args()
+    # python eval.py 
+    # parser = argparse.ArgumentParser(description='Show some samples from the dataset.')
+    # parser.add_argument('input_dir', type=str,
+    #                     help='Path to where prediction the submited result and the ground truth is.')
+    # parser.add_argument('output_dir', type=str,
+    #                     help='Path to where the eval result should be.')
+    # parser.add_argument('--pred_file_name', type=str, default='pred.json',
+    #                     help='Name of the eval file.')
+    # args = parser.parse_args()
 
-    # call eval
+    # # call eval
+    # main(
+    #     os.path.join(args.input_dir, 'ref'),
+    #     os.path.join(args.input_dir, 'res'),
+    #     args.output_dir,
+    #     args.pred_file_name,
+    #     set_name='evaluation'
+    # )
     main(
-        os.path.join(args.input_dir, 'ref'),
-        os.path.join(args.input_dir, 'res'),
-        args.output_dir,
-        args.pred_file_name,
-        set_name='evaluation'
+        os.path.join('eval_GT'),
+        '',                 # '' + 'mrc_ds.josn' = pred file path
+        'mobrecon - test',   # out directory
+        'mrc_ds.json',
+        'evaluation'
     )
