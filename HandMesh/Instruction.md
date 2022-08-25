@@ -214,6 +214,7 @@ self.run(phase='train')
 
 # New Code
 ## Train... same
+
 ## Evaluation - Ge
 Evaluate on Ge dataset
 
@@ -261,3 +262,32 @@ python -m mobrecon.main \
 
 **results** are stored in `HandMesh/mobrecon/out/MultipleDatasets/mrc_ds/demo/{ fold }/`  
 or shortcut(soft link) in `HandMesh/mobrecon/images/demo/{ fold }/`
+
+## (New) Dataset - HanCo
+hand motion **sequential** images shot from **8 viewpoints**
+data descriptions
+- RGB images in `rgb` folder  
+  `rgb/{clip name}/cam[0-7]/[0000 - 0123].jpg`
+- Hand Mask in `mask_hand` folder  
+  `mask_hand/{clip name}/cam[0-7]/[0000 - 0123].jpg`
+- Hand Joint notation in `xyz` folder  
+  `xyz/{clip name}/[0000 - 0123].json`
+- Hand Mesh notation in `shape` folder  
+  `shape/{clip name}/[0000 - 0123].json`
+- Camera Parameter in `calib` folder  
+  `calib/{clip name}/[0000 - 0123].json`
+- 
+```
+- Hand Joint notation in `xyz` folder
+[21 * [xyz coord]]
+== 21 * 3 matrix
+
+- Hand Mesh notation in `shape` folder
+shapes: 1 * 10 matrix
+poses: 1 * 48 matrix
+global_t: 1 * 1 * 3 matrix
+
+- Camera Parameter in `calib` folder
+K: 8 * [3x3 matrix]
+M: 8 * [4x4 matrix]
+```
