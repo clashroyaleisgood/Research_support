@@ -211,6 +211,13 @@ self.run(phase='train')
 -> for epoch in range(MAX_EPOCH): self.train()
 -> for data in self.train_loader: out = self.model(data['img'])
 ```
+```
+self.run(phase='pred') # predict on FreiHAND eval dataset
+-> verts_pred, align_state = registration(verts_pred, joint_img_pred, self.j_reg, data['calib'][0].cpu().numpy(), self.cfg.DATA.SIZE, poly=poly)
+    update verts_pred from wrist centered to camera centered
+    by utilizing verts_pred, and joint_img_pred
+-> j_reg @ (verts + j)
+```
 
 # New Code
 ## Train... same
@@ -291,3 +298,5 @@ global_t: 1 * 1 * 3 matrix
 K: 8 * [3x3 matrix]
 M: 8 * [4x4 matrix]
 ```
+
+## Mobrecon + Transformer(with previous 8 frames)
