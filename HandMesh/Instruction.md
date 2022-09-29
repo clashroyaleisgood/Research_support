@@ -274,16 +274,17 @@ or shortcut(soft link) in `HandMesh/mobrecon/images/demo/{ fold }/`
 hand motion **sequential** images shot from **8 viewpoints**
 data descriptions
 - RGB images in `rgb` folder  
-  `rgb/{clip name}/cam[0-7]/[0000 - 0123].jpg`
+  `rgb      /{clip name}/cam[0-7]/[0000 - 0123].jpg`
 - Hand Mask in `mask_hand` folder  
   `mask_hand/{clip name}/cam[0-7]/[0000 - 0123].jpg`
 - Hand Joint notation in `xyz` folder  
-  `xyz/{clip name}/[0000 - 0123].json`
+  `xyz      /{clip name}/[0000 - 0123].json`
 - Hand Mesh notation in `shape` folder  
-  `shape/{clip name}/[0000 - 0123].json`
+  `shape    /{clip name}/[0000 - 0123].json`
+  `shape    /{clip name}/cam[0-7]/[0000 - 0123].json`
 - Camera Parameter in `calib` folder  
-  `calib/{clip name}/[0000 - 0123].json`
-- 
+  `calib    /{clip name}/[0000 - 0123].json`
+
 ```
 - Hand Joint notation in `xyz` folder
 [21 * [xyz coord]]
@@ -298,5 +299,21 @@ global_t: 1 * 1 * 3 matrix
 K: 8 * [3x3 matrix]
 M: 8 * [4x4 matrix]
 ```
+
+### Transform
+use [transform_json_to_meshes.py](https://github.com/clashroyaleisgood/Research_support/blob/main/contra-hand/transform_json_to_meshes.py) to transform original `MANO shapes, poses` into `ply or numpy`  
+
+in HanCo meta_data  
+keys are:
+- 'is_train': 綠幕
+- 'subject_id': 人物
+- 'object_id': 手握
+- 'has_fit': 是否有 MANO 參數
+- 'is_valid': 該 MANO 參數 是否有人工檢驗過
+
+for each sequence, has_fit 的數量比 is_valid 更多，  
+此 Tansform 只會將，所有 frames 都有 MANO 參數的 SEQUENCE 進行轉換  
+filter: `len(has_fit) == sum(has_fit)`  
+另一方面，某些 sequence 沒有 mask，這些 sequence 在上一步的 filter 剛好都被過濾掉了，所以不用擔心
 
 ## Mobrecon + Transformer(with previous 8 frames)
