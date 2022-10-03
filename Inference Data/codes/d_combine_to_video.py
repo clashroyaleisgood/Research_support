@@ -32,7 +32,7 @@ def combine(image_folder_path: str, output_path: str, fps: float=24.0, img_type=
     
     out.release()
 
-def combine_video(inference_dataset_name: str, method: str, video_folder: str):
+def combine_video(inference_dataset_name: str, method: str, video_folder: str, skip: int=0):
     '''
     help find corresponding path, fpses
     support of combine()
@@ -59,7 +59,7 @@ def combine_video(inference_dataset_name: str, method: str, video_folder: str):
         StageName[0],
         f'{video_folder}.mp4'
     )
-    fps = 24
+    fps = 24 / (skip+1)
     if not path.isfile(source_video_path):
         print(f'[Warning]: no such source video: {source_video_path}')
         print(f'           use default fps: 24')

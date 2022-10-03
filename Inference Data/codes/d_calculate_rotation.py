@@ -152,6 +152,10 @@ def calc_save_csv(input_folder: str, output_path: str):
     df = pd.DataFrame(rotations)
     df.to_csv(output_path)
 
+    print(f'\ncompute rotation')
+    print(f'from: {input_folder}')
+    print(f'  to: {output_path}')
+
 def update_angle(rotations, joints, RotationMap):
     for rot_joint in rotations:
         # rot_joint: 'T1'
