@@ -75,7 +75,7 @@ https://drive.google.com/drive/folders/1MIE0Jo01blG6RWo2trQbXlQ92tMOaLx_
   for demo cmr...
 
 
-# Demo
+# Demo(out of date)
 ```
 ./cmr/scripts/demo_mobrecon.sh
 ```
@@ -299,6 +299,7 @@ global_t: 1 * 1 * 3 matrix
 K: 8 * [3x3 matrix]
 M: 8 * [4x4 matrix]
 ```
+**Details in HanCo.py**
 
 ### Transform
 use [transform_json_to_meshes.py](https://github.com/clashroyaleisgood/Research_support/blob/main/contra-hand/transform_json_to_meshes.py) to transform original `MANO shapes, poses` into `ply or numpy`  
@@ -315,5 +316,45 @@ for each sequence, has_fit 的數量比 is_valid 更多，
 此 Tansform 只會將，所有 frames 都有 MANO 參數的 SEQUENCE 進行轉換  
 filter: `len(has_fit) == sum(has_fit)`  
 另一方面，某些 sequence 沒有 mask，這些 sequence 在上一步的 filter 剛好都被過濾掉了，所以不用擔心
+**細節限制在 HanCo.py 中**
+```python
+dataset[i] = {
+    'img': (#, 3, *shape),
+    'mask': (#, *shape),
+
+    'joint_cam': (#, 21, 3),
+    'joint_img': (#, 21, 2),
+    'verts': (#, 778, 3),
+
+    'root': (#, 3),
+    'calib': (#, 4, 4),
+}
+```
 
 ## Mobrecon + Transformer(with previous 8 frames)
+pass
+
+## Train BackBone
+exp in `HandMesh/my_backbone/`
+new
+```
+main.py
+runner.py
+build.py
+datasets/{ freihand, comp hand, ge, multiple } light-version, need 2d joint only
+models/{ densestack, resnetstack, other exps... }
+configs/ MODEL.NAME=={ DenseStack }_Backbone
+scripts/
+```
+
+> Description in paper:
+> epochs: 80
+> batch-size: 128
+> learning rate: 10^-3, /=10 at 20th, 40th, 60th epoch
+> loss: heatmap + regression
+> > update: just use regression, just like full-train
+
+train_loss: 0.0172  in (0, 1)
+            2.2016  in (0, 128)
+eval_loss:  7.79192 in (0, 128)
+
