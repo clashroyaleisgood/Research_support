@@ -138,18 +138,32 @@ def find_bbox(folder, joint_3d=False, palm_detection=True, mode='show'):
                         mp_drawing_styles.get_default_hand_landmarks_style(),
                         mp_drawing_styles.get_default_hand_connections_style())
 
+                # annot on original image
+                # cv2.imshow('title', cv2.flip(annotated_image, 1))
+                # cv2.waitKey(0)
+                # cv2.destroyAllWindows()
+
+                # 3d visualize
                 for hand_world_landmarks in results.multi_hand_world_landmarks:
                     mp_drawing.plot_landmarks(
                         hand_world_landmarks, mp_hands.HAND_CONNECTIONS, azimuth=5)
 
             if palm_detection:
                 for hand_landmarks in results.multi_hand_landmarks:
+                    if len(results.multi_hand_landmarks) > 1:
+                        print(f'image: {idx} 2 hands')  # 2 hands... troublesome
+
                     for joint in hand_landmarks.landmark:
                         # print(joint.x, joint.y)
                         max_bbox[0] = min(max_bbox[0], joint.x)
                         max_bbox[1] = min(max_bbox[1], joint.y)
                         max_bbox[2] = max(max_bbox[2], joint.x)
                         max_bbox[3] = max(max_bbox[3], joint.y)
+        # max_bbox may out of (0, 1)
+        max_bbox[0] = max(max_bbox[0], 0)
+        max_bbox[1] = max(max_bbox[1], 0)
+        max_bbox[2] = min(max_bbox[2], 1)
+        max_bbox[3] = min(max_bbox[3], 1)
 
     if palm_detection:
         # print(max_bbox)
@@ -239,7 +253,7 @@ if __name__ == '__main__':
             folder=image_folder,
             joint_3d=False,
             palm_detection=True,
-            mode='show'
+            mode='return'
         )
 
         boxing_folder(image_folder, bbox, img_type='jpg')
