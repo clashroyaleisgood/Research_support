@@ -3,6 +3,7 @@ import numpy as np
 import os
 from os import path
 import pandas as pd
+from typing import OrderedDict
 
 # from HandMesh/cmr/datasets/FreiHAND/kinematics.py
 class MPIIHandJoints:
@@ -54,6 +55,15 @@ class MPIIHandRotation:
         'R0', 'R1', 'R2',
         'L0', 'L1', 'L2'
     ]
+
+    # map from medical name to mobrecon joint name
+    mapping = OrderedDict({
+        '1 IP' : 'T2',                '1 MCP': 'T1',  # thumb
+        '2 DIP': 'I2', '2 PIP': 'I1', '2 MCP': 'I0',  # index  finger
+        '3 DIP': 'M2', '3 PIP': 'M1', '3 MCP': 'M0',  # middle finger
+        '4 DIP': 'R2', '4 PIP': 'R1', '4 MCP': 'R0',  # ring   figner
+        '5 DIP': 'L2', '5 PIP': 'L1', '5 MCP': 'L0',  # little finger
+    })
 
     def get_rotation_dict():
         '''
@@ -109,7 +119,7 @@ class MPIIHandRotation:
         #     index_joints += [self.labels.index(name)]
         return [MPIIHandRotation.labels.index(name) for name in joints]
 
-def save_csv(inference_dataset_name: str, method: str, video_folder: str):
+def save_csv(inference_dataset_name: str, method: str, video_folder: str, return_min_max=False):
     '''
     prepare path strings for calc_save_csv()
     '''
@@ -129,9 +139,12 @@ def save_csv(inference_dataset_name: str, method: str, video_folder: str):
         f'{video_folder}.csv'
     )
 
-    calc_save_csv(input_folder, output_path)
+    out = calc_save_csv(input_folder, output_path, return_min_max=return_min_max)
+    if return_min_max:
+        out.name = video_folder
+        return out
 
-def calc_save_csv(input_folder: str, output_path: str):
+def calc_save_csv(input_folder: str, output_path: str, return_min_max=False):
     '''
     compute all npy files in {input_folder}
 
@@ -149,12 +162,45 @@ def calc_save_csv(input_folder: str, output_path: str):
         joints = np.load(fullpath)  # (21, 3)
         update_angle(rotations, joints, RotationMap)
 
+    # end calculate all rotation angles
     df = pd.DataFrame(rotations)
+
+    # normal rotation map in each angle
     df.to_csv(output_path)
 
     print(f'\ncompute rotation')
     print(f'from: {input_folder}')
     print(f'  to: {output_path}')
+
+    if return_min_max:
+        return prepare_overall_minmax(df)
+
+
+def prepare_overall_minmax(df: pd.DataFrame) -> pd.Series:
+    '''
+    rotations: {T I M R L} + {0   1   2  }    min max
+    new data : {1 2 3 4 5} + {MCP PIP DIP} + {ext flex}
+    Note that: thumb have one IP instead of {DIP PIP}
+
+    return pd.Series({
+        '1 IP ext': [int], '1 IP flex': [int],
+        '1 MCP ext': [int], ...
+    })
+    '''
+    mapping = MPIIHandRotation.mapping
+    # {..., '2 DIP': 'I2', '2 PIP': 'I1', '2 MCP': 'I0', ...}  # index  finger
+
+    df_min, df_max = df.min(), df.max()
+
+    row_data = {}
+    for medical_name, mobrecon_name in mapping.items():
+        row_data[medical_name + ' ext' ] = df_min[mobrecon_name] # min
+        row_data[medical_name + ' flex'] = df_max[mobrecon_name] # max
+
+    series = pd.Series(data = row_data)
+    return series
+
+# -----------------------------------------------
 
 def update_angle(rotations, joints, RotationMap):
     for rot_joint in rotations:
@@ -204,15 +250,25 @@ def angle_between(v1, v2):
 
 if __name__ == "__main__":
     # 3-{method} to 4r-{method}_rotation
-    inference_dataset_name = 'infer_Hand5'
+    inference_dataset_name = 'infer_ROM_data_2'
     video_folder = [
-        'hand_1',
-        'hand_2',
+        '8M',
+        '8R',
+        '8U',
+        # 'hand_2',
     ]
     method = 'mobrecon'
+
+    overall_series = []
     for i in range(len(video_folder)):
-        save_csv(
+        min_max_series = save_csv(
             inference_dataset_name=inference_dataset_name,
             method=method,
-            video_folder=video_folder[i]
+            video_folder=video_folder[i],
+            return_min_max=True
         )
+        overall_series += [min_max_series]
+
+    overall_df = pd.concat(overall_series, axis=1).transpose().round(2)
+
+    overall_df.to_csv(os.path.join(inference_dataset_name, 'overall_rotation.csv'))
