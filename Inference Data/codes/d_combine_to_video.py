@@ -54,18 +54,27 @@ def combine_video(inference_dataset_name: str, method: str, video_folder: str, s
         f'{video_folder}.mp4'
     )   # infer_HandMotion / 4-mobrecon_video / [0_stone].mp4
 
+    source_video_filename = [
+        file for file in os.listdir(os.path.join(inference_dataset_name, StageName[0]))
+        if file.startswith(video_folder)
+    ]
+    assert len(source_video_filename) == 1, \
+        f'there should be only one file startwith: {video_folder}, got: {source_video_filename}'
+    source_video_filename = source_video_filename[0]
+
     source_video_path = os.path.join(
         inference_dataset_name,
         StageName[0],
-        f'{video_folder}.mp4'
+        source_video_filename
     )
-    fps = 24 / (skip+1)
+    fps = 24
     if not path.isfile(source_video_path):
         print(f'[Warning]: no such source video: {source_video_path}')
         print(f'           use default fps: 24')
     else:
         source_video = cv2.VideoCapture(source_video_path)
         fps = source_video.get(cv2.CAP_PROP_FPS)
+    fps = fps / (skip+1)
 
     combine(image_folder_path, output_path, fps)
 
