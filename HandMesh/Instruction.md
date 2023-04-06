@@ -40,6 +40,8 @@ pip install torch-scatter torch-sparse torch-cluster torch-spline-conv torch-geo
 ## Specail Package( MPI-IS )
 Install MPI-IS Mesh from the source: https://github.com/MPI-IS/mesh
 ```
+git clone https://github.com/MPI-IS/mesh.git
+
 # require
 sudo apt-get install libboost-dev
     # check if exist
