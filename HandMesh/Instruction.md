@@ -34,7 +34,7 @@ install the packages that fails
 install at: https://pytorch-geometric.readthedocs.io/en/latest/notes/installation.html
 ```
 # PyTorch 1.11.* | Linux | Pip | CUDA 11.3
-pip install torch-scatter torch-sparse torch-cluster torch-spline-conv torch-geometric -f https://data.pyg.org/whl/torch-1.11.0+cu113.html
+pip install torch-scatter==2.0.9 torch-sparse==0.6.14 torch-cluster==1.6.0 torch-spline-conv==1.2.1 torch-geometric==2.0.4 -f https://data.pyg.org/whl/torch-1.11.0+cu113.html
 ```
 
 ## Specail Package( MPI-IS )
@@ -53,6 +53,16 @@ sudo apt-get install libboost-dev
 ```
 test with: `$ make tests`
 done!
+
+## Re-install previous versions
+`MPI-IS` may automatically install newest version of numpy, scipy..., and cause some error in code dependencies. So, we need to re-install older version of those packages.
+```
+pip install -r requirements.txt
+```
+and check the `torch-scatter, ...` versions by `pip list`, if not the previous one, then re-install
+```
+pip install torch-scatter==2.0.9 torch-sparse==0.6.14 torch-cluster==1.6.0 torch-spline-conv==1.2.1 torch-geometric==2.0.4 -f https://data.pyg.org/whl/torch-1.11.0+cu113.html
+```
 
 ## download MANO model
 download it!
