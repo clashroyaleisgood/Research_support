@@ -366,7 +366,30 @@ scripts/
 > loss: heatmap + regression
 > > update: just use regression, just like full-train
 
-train_loss: 0.0172  in (0, 1)
-            2.2016  in (0, 128)
+train_loss: 0.0172  in (0, 1)  
+            2.2016  in (0, 128)  
 eval_loss:  7.79192 in (0, 128)
 
+# Quantitative compares
+> in `my_research/`
+
+## Single image
+- mobrecon densestack  
+  `train_mobrecon.sh`, `mobrecon_ds.yml`, `mobrecon_ds.py`  
+  change Phase in yml only  
+  `PHASE` in ('train', 'eval', 'test')  
+  commented `RESUME` if `PHASE` == 'train' ( in the begining )
+- ours single version  
+  `train_mobrecon_conf_transformer_single.sh`,  
+  `mobrecon_ds_conf_transformer_single.yml`,  
+  `mobrecon_ds_conf_transformer_single.py`
+  change Phase in yml only  
+  `PHASE` in ('train', 'eval', 'test')  
+  **in training phase:**  
+  1. train model without transformer, but with layernorm before transformer  
+     to stable weights, for 10 epoch
+  2. use the trained `checkpoints_last.pth` to continue training the remaining 40 epochs
+
+## Multi frames
+- mobrecon densestack
+- ours multi version
