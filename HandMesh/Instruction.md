@@ -377,19 +377,34 @@ eval_loss:  7.79192 in (0, 128)
 - mobrecon densestack  
   `train_mobrecon.sh`, `mobrecon_ds.yml`, `mobrecon_ds.py`  
   change Phase in yml only  
-  `PHASE` in ('train', 'eval', 'test')  
+  `PHASE` in ('train', 'eval', 'pred')  
   commented `RESUME` if `PHASE` == 'train' ( in the begining )
 - ours single version  
   `train_mobrecon_conf_transformer_single.sh`,  
   `mobrecon_ds_conf_transformer_single.yml`,  
   `mobrecon_ds_conf_transformer_single.py`
   change Phase in yml only  
-  `PHASE` in ('train', 'eval', 'test')  
+  `PHASE` in ('train', 'eval', 'pred')  
   **in training phase:**  
   1. train model without transformer, but with layernorm before transformer  
      to stable weights, for 10 epoch
   2. use the trained `checkpoints_last.pth` to continue training the remaining 40 epochs
 
 ## Multi frames
-- mobrecon densestack
+- mobrecon densestack  
+  `train_mobrecon_seq.sh`,  
+  `mobrecon_ds_seq.yml`,  
+  `mobrecon_ds_seq.py`  
+  change Phase in yml only  
+  `PHASE` in ('train', 'eval', 'test')  
+  commented `RESUME` if `PHASE` == 'train' ( in the begining )
 - ours multi version
+  `train_mobrecon_conf_transformer.sh`,  
+  `mobrecon_ds_conf_transformer.yml`,  
+  `mobrecon_ds_conf_transformer.py`  
+  change Phase in yml only  
+  `PHASE` in ('train', 'eval', 'test')  
+  **in training phase:**  
+  1. train model without transformer, but with layernorm before transformer  
+     to stable weights, for 10 epoch
+  2. use the trained `checkpoints_last.pth` to continue training the remaining 40 epochs
