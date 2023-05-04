@@ -408,3 +408,13 @@ eval_loss:  7.79192 in (0, 128)
   1. train model without transformer, but with layernorm before transformer  
      to stable weights, for 10 epoch
   2. use the trained `checkpoints_last.pth` to continue training the remaining 40 epochs
+
+## Multi Frame Visualization
+1. run test Phase in mobrecon and ours( on HanCo, multi-frame )  
+   -> produce `/test/` in experiment folder, contains `{seq}_0.npz`: joint_3d and verts_3d
+2. run `hanco_eval.py/` - `HanCo_Eval._reference()`  
+   to visualize prediction result from different model
+
+how to find better images to visualize -> check mpvpe in each frames
+1. edit procedure in `Runner.test()`, to output mpvpe or mpjpe in each frames
+2. use `my_research/tools/find_visualizations.py` to compare mpvpe scores in each frames from two models
