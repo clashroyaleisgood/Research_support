@@ -316,7 +316,29 @@ M: 8 * [4x4 matrix]
 ### Transform
 use [transform_json_to_meshes.py](https://github.com/clashroyaleisgood/Research_support/blob/main/contra-hand/transform_json_to_meshes.py) to transform original `MANO shapes, poses` into `ply or numpy`  
 
-in HanCo meta_data  
+add to dataset folder
+```
+HanCo/
+    calib/
+    mask_hand/
+    meta.json
+    numpy_seq/  # <- transformed mesh sequences
+    rgb/
+    rgb_color_auto/
+    rgb_color_sample/
+    rgb_homo/
+    rgb_merged/
+    shape/
+    xyz/
+```
+
+create soft link to `HandMesh/data/HanCo
+```
+HandMesh/data $
+    ln -s /path/to/HanCo HanCo
+```
+
+### in HanCo meta_data  
 keys are:
 - 'is_train': 綠幕
 - 'subject_id': 人物
