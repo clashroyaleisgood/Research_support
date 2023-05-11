@@ -1,7 +1,7 @@
 # Instructions
-root folder: 'Inference Data'
 ```
-root folder/
+Inference Data/
+    codes/
     Experiment_name/
         0-source/             --- if you have source videos
             inference_video1.mp4
@@ -31,6 +31,11 @@ root folder/
    you'll need to manually find good bbox position  
    **Note that:** bbox must be square  
    > this will generate `Experiment_name/2-boxed_images`
+
+   **new**  
+   use `b_mediapipe_auto_find.py` to crop images automatically  
+   by joint 2D prediction from mediapipe
+
 3. use some other ML model to inference  
    > Put results to `Experiment_name/3-{model_name}/`  
    > `video_name/0000_mesh.ply`  
@@ -50,4 +55,5 @@ root folder/
       `d_joint_mesh_to_ply.py`  
       > this will **NOT** generate anything
 
-
+**Update**:
+- Use `_run_all.py` to run steps above faster and more convinient
