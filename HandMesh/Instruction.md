@@ -30,7 +30,7 @@ re-execute
 pip install -r requirements.txt
 ```
 
-install the packages that fails
+install the packages that fails  
 install at: https://pytorch-geometric.readthedocs.io/en/latest/notes/installation.html
 ```
 # PyTorch 1.11.* | Linux | Pip | CUDA 11.3
@@ -440,3 +440,29 @@ eval_loss:  7.79192 in (0, 128)
 how to find better images to visualize -> check mpvpe in each frames
 1. edit procedure in `Runner.test()`, to output mpvpe or mpjpe in each frames
 2. use `my_research/tools/find_visualizations.py` to compare mpvpe scores in each frames from two models
+
+# Angle Predictor | negative thumb detection
+### dataset
+add csv to train FreiHAND folder  
+contains well-screened image indices and  
+annotation for whether negative thumb angle or not
+
+```
+HandMesh/data/FreiHAND
+    select_freihand.csv
+```
+
+### codes
+dataset -> `freihand_angle.py > FreiHAND_Angle`  
+tasks:
+1. filter training images
+2. add additional `negative` flag
+   1 if negative, 0 if positive
+
+model -> `mobrecon_ds_angle.py > MobRecon_DS_Angle`
+1. add `negative_thumb` prediction head  
+   `(B, V, D) -> linear1 -> (B, V, D/4) -> dropout -> linear2 (B, V, D/16) -> reshape ->`  
+   `(B, V*D/16) -> dropout -> linear3 -> (B, V*D/64) -> dropout -> linear4 -> (B, V*D/256) -> linear5 -> (B, 1)`
+2. binary cross entropy loss, with sigmoid(prediction)
+
+settings -> `train_mobrecon_angle.sh`, `mobrecon_ds_angle.yml`
