@@ -139,12 +139,17 @@ def save_csv(inference_dataset_name: str, method: str, video_folder: str, return
         f'{video_folder}.csv'
     )
 
-    out = calc_save_csv(input_folder, output_path, return_min_max=return_min_max)
+    # Supply of negativeness information
+    negative = None
+    if os.path.exists(os.path.join(input_folder, 'negative.csv')):
+        negative = np.loadtxt(os.path.join(input_folder, 'negative.csv'))  # (Frames,)
+
+    out = calc_save_csv(input_folder, output_path, return_min_max=return_min_max, negative=negative)
     if return_min_max:
         out.name = video_folder
         return out
 
-def calc_save_csv(input_folder: str, output_path: str, return_min_max=False):
+def calc_save_csv(input_folder: str, output_path: str, return_min_max=False, negative=None):
     '''
     compute all npy files in {input_folder}
 
@@ -154,18 +159,23 @@ def calc_save_csv(input_folder: str, output_path: str, return_min_max=False):
     rotations = {e: [] for e in MPIIHandRotation.rotations}  # {'T1': [], ...}
     RotationMap = MPIIHandRotation.get_rotation_dict()
 
+    idx = -1  # idx-th frame output
     for filename in os.listdir(input_folder):
         if not filename.endswith('npy'):
             continue
+        idx += 1
 
         fullpath = os.path.join(input_folder, filename)
         joints = np.load(fullpath)  # (21, 3)
-        update_angle(rotations, joints, RotationMap)
+        update_angle(
+            rotations, joints, RotationMap,
+            thumb_negative=negative[idx] > 0.5 if negative is not None else None
+        )
 
     # end calculate all rotation angles
     df = pd.DataFrame(rotations)
 
-    # normal rotation map in each angle
+    # csv 1: normal rotation map in each video
     df.to_csv(output_path)
 
     print(f'\ncompute rotation')
@@ -202,7 +212,7 @@ def prepare_overall_minmax(df: pd.DataFrame) -> pd.Series:
 
 # -----------------------------------------------
 
-def update_angle(rotations, joints, RotationMap):
+def update_angle(rotations, joints, RotationMap, thumb_negative=None):
     for rot_joint in rotations:
         # rot_joint: 'T1'
         i1 = RotationMap[rot_joint][0]
@@ -211,6 +221,9 @@ def update_angle(rotations, joints, RotationMap):
         rotations[rot_joint] += [calc_angle(
             joints[i1], joints[i2], joints[i3]
         )]
+
+    if thumb_negative is not None and thumb_negative == True:  # T2 is negative
+        rotations['T2'][-1] *= -1
 
 def calc_angle(j1, j2, j3):
     '''
@@ -271,4 +284,5 @@ if __name__ == "__main__":
 
     overall_df = pd.concat(overall_series, axis=1).transpose().round(2)
 
+    # csv 2: overall rotation minmax
     overall_df.to_csv(os.path.join(inference_dataset_name, 'overall_rotation.csv'))

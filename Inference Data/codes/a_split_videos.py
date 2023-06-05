@@ -3,7 +3,7 @@ import os
 from os import path
 from configs import StageName
 
-def extract(video_path: str, large_folder_path: str, skip, img_type: str='jpg') -> None:
+def extract(video_path: str, large_folder_path: str, skip, right_hand, img_type: str='jpg') -> None:
     '''
     Extract video from {video_path} to {large_folder_path/video_path/image1, ...}
     large_folder_path/
@@ -36,7 +36,8 @@ def extract(video_path: str, large_folder_path: str, skip, img_type: str='jpg') 
         if counter % 100 == 0:
             print(f'{counter:04d}.{img_type}...>')
         if counter % (skip + 1) == 0:
-            # image = cv2.flip(image, 1)
+            if not right_hand:
+                image = cv2.flip(image, 1)
             cv2.imwrite(
                 path.join(output_full_path, f'{counter:04d}.{img_type}'),
                 image
@@ -48,23 +49,16 @@ def extract(video_path: str, large_folder_path: str, skip, img_type: str='jpg') 
     from math import ceil
     print(f'End extracting {int(ceil(counter / (skip+1)))} frames\n')
 
-
-# StageName = [
-#     '0-source',
-#     '1-full_images',
-#     '2-boxed_images'
-# ]
-
-def extract_one_video(inference_dataset_name, video_name, skip):
+def extract_one_video(inference_dataset_name, video_name, skip, right_hand):
     '''
     video_path          = path.join(inference_dataset_name, '0-source', video_name)
     output_large_folder = path.join(inference_dataset_name, '1-full_images')
     '''
     video_path = path.join(inference_dataset_name, StageName[0], video_name)
     output_large_folder = path.join(inference_dataset_name, StageName[1])
-    extract(video_path, output_large_folder, skip)
+    extract(video_path, output_large_folder, skip, right_hand)
 
-def extract_videos(inference_dataset_name, video_names, skip):
+def extract_videos(inference_dataset_name, video_names, skip, right_hand):
     ''' 
     skip {skip} images, between each result frames
         skip=0, [0, 1, 2, 3, ...]
@@ -75,15 +69,16 @@ def extract_videos(inference_dataset_name, video_names, skip):
         extract_one_video(
             inference_dataset_name,
             filename,
-            skip
+            skip,
+            right_hand
         )
 
 if __name__ == '__main__':
     # 0-sourve to 1-full_images
     #   video,      images
-    inference_dataset_name = 'mediapipe_test'
+    inference_dataset_name = 'test'
     video_names = [
-        '01M.mp4',
+        '2R.mp4',
     ]
     skip = 5 # fps /= (skip+1)
 
@@ -91,4 +86,4 @@ if __name__ == '__main__':
     # to_folder = path.join(inference_dataset_name, '1-full_images')
     # extract(video_path, to_folder)
 
-    extract_videos(inference_dataset_name, video_names, skip)
+    extract_videos(inference_dataset_name, video_names, skip, right_hand=True)

@@ -7,8 +7,8 @@ from d_combine_to_video import combine_video
 import os
 
 
-def a_step(inference_dataset_name, video_names, skip):
-    extract_videos(inference_dataset_name, video_names, skip)
+def a_step(inference_dataset_name, video_names, skip, right_hand):
+    extract_videos(inference_dataset_name, video_names, skip, right_hand)
 
 
 def b_step(inference_dataset_name, video_folders, resume_at=None):
@@ -24,9 +24,12 @@ def b_step(inference_dataset_name, video_folders, resume_at=None):
 
         bbox = find_bbox(
             folder=image_folder,
-            joint_3d=False,
-            palm_detection=True,
-            mode='return'
+            show_joint_3d=False,
+            show_joint_2d=False,
+            bbox_detection=True,
+            show_bbox=False,
+            show_square_bbox=False,
+            ret_square_bbox=True,
         )
 
         boxing_folder(image_folder, bbox, img_type='jpg')
@@ -67,13 +70,15 @@ if __name__ == '__main__':
     video_folders = [file.rsplit('.', 1)[0] for file in video_names]
     # print(video_folders)
 
-    # step: a, b
+    # Hyper Param
     skip = 5
-    # a_step(inference_dataset_name, video_names, skip)
-    # b_step(inference_dataset_name, video_folders, resume_at='30U')
+    right_hand = True
+    # step: a, b
+    # a_step(inference_dataset_name, video_names, skip, right_hand)
+    # b_step(inference_dataset_name, video_folders)  # resume_at='30U'
 
     # WAIT step: c
-    method = 'mobrecon'
+    method = 'mobrecon_angle_1head'
 
     mode = 'vr'  # video and rotation
     # step: dr, dc
