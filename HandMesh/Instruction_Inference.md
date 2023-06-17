@@ -11,9 +11,9 @@ to manage python package environments:
 ## Environment for pre/post-processing
 ### Clone my repository
 ```
-~/Desktop$
+~/Desktop $
     git clone https://github.com/clashroyaleisgood/Research_support.git
-~/Desktop$
+~/Desktop $
     cd Research_support/"Inference Data"
 ```
 
@@ -24,16 +24,16 @@ conda activate processing
 ```
 
 ```
-~/Desktop/Research_support/Inference Data$
-    pip install -r codes/requirements.txt
+~/Desktop/Research_support/Inference Data $
+    pip install numpy==1.23.1 opencv-python==4.6.0.66 mediapipe==0.8.9.1 pandas==1.4.2 protobuf==3.19.4
 ```
 
 ## Environment for MobRecon
 ### Clone my repository
 ```
-~/Desktop$
+~/Desktop $
     git clone https://github.com/clashroyaleisgood/HandMesh.git
-~/Desktop$
+~/Desktop $
     cd HandMesh
 ```
 
@@ -49,7 +49,7 @@ conda install pytorch==1.11.0 torchvision==0.12.0 torchaudio==0.11.0 cudatoolkit
 
 ### Install other Packages
 ```
-~/Desktop/HandMesh$
+~/Desktop/HandMesh $
     pip install -r requirements.txt
 ```
 
@@ -63,11 +63,11 @@ pip install torch-scatter==2.0.9 torch-sparse==0.6.14 torch-cluster==1.6.0 torch
 ### Install MPI-IS
 Install MPI-IS Mesh from the source: https://github.com/MPI-IS/mesh
 ```
-~/Desktop/HandMesh$
+~/Desktop/HandMesh $
     cd ..
-~/Desktop$
+~/Desktop $
     git clone https://github.com/MPI-IS/mesh.git
-~/Desktop$
+~/Desktop $
     cd mesh
 ```
 
@@ -95,15 +95,15 @@ run the installation
 Accept [MANO LICENCE](https://mano.is.tue.mpg.de/license.html).  
 Download MANO model from official website, then run
 ```
-~/Desktop/HandMesh$
+~/Desktop/HandMesh $
     ln -s /path/to/mano_v1_2/MANO_RIGHT.pkl template/MANO_RIGHT.pkl
 ```
 
 ## Pretrained Weights
-Download pretrained weights (`checkpoint_last.pth`) at: [link not complete]()  
+Download pretrained weights (`checkpoint_last.pth`) at: [link](https://drive.google.com/drive/folders/1Nai7gcDmep39QGN3ToDaXwsauQUvutHh?usp=drive_link)  
 place it to
 ```
-~/Desktop/HandMesh/mobrecon/out/MultipleDatasets/mrc_ds/checkpoints/checkpoint_last.py
+~/Desktop/HandMesh/my_research/out/FreiHAND_Angle/mrc_ds_angle_1_head_pretrained_correct/checkpoints/checkpoint_best.pt
 ```
 
 # Inference Videos( Demo )
@@ -124,12 +124,12 @@ move it to MobRecon folder as described below
 
 ## MobRecon Predict
 `Cropped images -> MobRecon -> Hand mesh, joint prediction`  
-> switch to env: pre/post-processing  
+> switch to env: MobRecon  
 > `conda activate handmesh`
 
 place cropped images to
 ```
-~/Desktop/HandMesh/mobrecon/images/
+~/Desktop/HandMesh/my_research/images/
     video_clip1/
         0000.jpg
         0006.jpg
@@ -141,15 +141,11 @@ place cropped images to
 
 and run instruction
 ```
-exp_name='mrc_ds'
-CUDA_VISIBLE_DEVICES=0
-
-python -m mobrecon.main \
-    --exp_name $exp_name \
-    --config_file mobrecon/configs/mobrecon_ds_demo.yml
+~/Desktop/HandMesh $
+    ./my_research/scripts/train_mobrecon_angle.sh
 ```
 
-prediction results are stored in `HandMesh/mobrecon/out/MultipleDatasets/mrc_ds/demo/{ video_clip1 | video_clip2 }/`  
+prediction results are stored in `HandMesh/my_research/out/FreiHAND_Angle/mrc_ds_angle_1_head_pretrained_correct/demo/{ video_clip1 | video_clip2 }/`  
 move it back to post-processing folder as described below
 
 ## Post-process
