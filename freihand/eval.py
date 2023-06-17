@@ -387,9 +387,9 @@ if __name__ == '__main__':
     #     set_name='evaluation'
     # )
     main(
-        os.path.join('eval_GT'),
-        '',                 # '' + 'mrc_ds.josn' = pred file path
-        'mobrecon - test',   # out directory
-        'mrc_ds.json',
+        os.path.join('eval_GT'),    # ground-truth path
+        '',                         # prediction folder
+        'mobrecon_eval_result',     # output folder
+        'mrc_ds.json',              # prediction file name, (full path == FH_dataset / predictoin_folder / prediction_file_name)
         'evaluation'
     )
