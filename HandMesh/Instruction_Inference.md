@@ -153,7 +153,9 @@ move it back to post-processing folder as described below
 > switch to env: pre/post-processing  
 > `conda activate processing`
 
-place prediction results to
+place prediction results to 3-{`method`} as folder configuration below
+> `method` related to `_run_all.py > method = 'mobrecon_angle_1head'`
+
 ```
 Inference Data/
     Experiment_name/
