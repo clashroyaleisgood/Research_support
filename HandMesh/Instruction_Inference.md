@@ -102,11 +102,18 @@ Download MANO model from official website, then place it to
 ```
 
 ## Pretrained Weights
-Download pretrained weights (`checkpoint_last.pth`) at: [link](https://drive.google.com/drive/folders/1Nai7gcDmep39QGN3ToDaXwsauQUvutHh?usp=drive_link)  
+Download pretrained weights (`checkpoint_best.pt`) at: [link](https://drive.google.com/drive/folders/1Nai7gcDmep39QGN3ToDaXwsauQUvutHh?usp=drive_link)  
 place it to
 ```
 ~/Desktop/HandMesh/
     my_research/out/FreiHAND_Angle/mrc_ds_angle_1_head_pretrained_correct/checkpoints/checkpoint_best.pt
+```
+
+Download backbone weights (`densestack.pth`) at: [link](https://drive.google.com/drive/folders/16T5Q4yYxX-HOQGy-u7wz3KApJk6YvD7e?usp=drive_link)  
+place it to
+```
+~/Desktop/HandMesh/
+    my_research/out/densestack.pth
 ```
 
 # Inference Videos( Demo )
@@ -159,7 +166,7 @@ Use `Inference Data/codes/_run_all.py` for pre-processing
 then, run
 ```
 Research_support/Inference Data $
-    codes/_run_all.py
+    python codes/_run_all.py
 ```
 
 the cropped output images are placed in: `Experiment_name/2-boxed_images/`  
@@ -222,7 +229,7 @@ Use `Desktop/Research_support/Inference Data/codes/_run_all.py` for post-process
 then, run
 ```
 Research_support/Inference Data $
-    codes/_run_all.py
+    python codes/_run_all.py
 ```
  
 the joint angle information is at: `Experiment_name/4r-mobrecon_rotation/`
